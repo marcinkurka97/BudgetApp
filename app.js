@@ -71,7 +71,7 @@ var budgetController = (function() {
       // Calculate the budget: income - expenses
       data.budget = data.totals.inc - data.totals.exp;
 
-      // Calculate the percentage of incone that we spent
+      // Calculate the percentage of income that we spent
       if (data.totals.inc > 0) {
         data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
       } else {
@@ -105,7 +105,11 @@ var UIController = (function() {
     inputValue: ".add__value",
     inputButton: ".add__btn",
     incomeContainer: '.income__list',
-    expensesContainer: '.expenses__list'
+    expensesContainer: '.expenses__list',
+    budgetLabel: '.budget__value',
+    incomeLabel: '.budget__income--value',
+    expensesLabel: '.budget__expenses--value',
+    percentageLabel: '.budget__expenses--percentage'
   };
 
   return {
@@ -149,7 +153,18 @@ var UIController = (function() {
       });
 
       fieldsArray[0].focus();
+    },
 
+    displayBudget: function(obj) {
+      document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
+      document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalIncome;
+      document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExpenses;
+
+      if (obj.percentage > 0) {
+        document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
+      } else {
+        document.querySelector(DOMstrings.percentageLabel).textContent = '---';
+      }
     },
 
     getDOMstrings: function() {
@@ -185,7 +200,7 @@ var controller = (function(budgetCtrl, UICtrl) {
     var budget = budgetController.getBudget();
 
     // 3. Display budget on the UI
-    console.log(budget);
+    UICtrl.displayBudget(budget);
   }
 
   var ctrlAddItem = function() {
@@ -213,6 +228,12 @@ var controller = (function(budgetCtrl, UICtrl) {
   return {
     init: function() {
       console.log("Started");
+      UICtrl.displayBudget({
+        budget: 0,
+        totalIncome: 0,
+        totalExpenses: 0,
+        percentage: -1
+      });
       setupEventListeners();
     }
   }
